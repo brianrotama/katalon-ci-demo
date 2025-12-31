@@ -1,0 +1,34 @@
+name: Katalon CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  katalon-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download Katalon
+        run: |
+          wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
+          tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
+
+      - name: Run Katalon Test Suite
+        run: |
+          ./Katalon_Studio_Linux_64-10.2.0/katalonc \
+            -noSplash \
+            -runMode=console \
+            -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
+            -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
+            -browserType="Chrome"
+
