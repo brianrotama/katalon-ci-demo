@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSuiteEntity>
+   <description></description>
+   <name>TS_ReuseLogin_ObjectRepository_DataDriven</name>
+   <tag></tag>
+   <isRerun>false</isRerun>
+   <mailRecipient></mailRecipient>
+   <numberOfRerun>0</numberOfRerun>
+   <pageLoadTimeout>10</pageLoadTimeout>
+   <pageLoadTimeoutDefault>true</pageLoadTimeoutDefault>
+   <rerunFailedTestCasesOnly>false</rerunFailedTestCasesOnly>
+   <rerunImmediately>false</rerunImmediately>
+   <testSuiteGuid>eaaabea1-646c-4cf8-863c-614fdfe5674b</testSuiteGuid>
+   <testCaseLink>
+      <guid>89258265-8075-44d3-90e8-b5e4792750e2</guid>
+      <isReuseDriver>false</isReuseDriver>
+      <isRun>true</isRun>
+      <testCaseId>Test Cases/TC_ReuseLogin_ObjectRepository_DataDriven</testCaseId>
+      <testDataLink>
+         <combinationType>MANY</combinationType>
+         <id>9dd46fc6-7acb-4f0b-8336-bd376762f28e</id>
+         <iterationEntity>
+            <iterationType>ALL</iterationType>
+            <value></value>
+         </iterationEntity>
+         <testDataId>Data Files/login_data</testDataId>
+      </testDataLink>
+      <usingDataBindingAtTestSuiteLevel>true</usingDataBindingAtTestSuiteLevel>
+      <variableLink>
+         <testDataLinkId>9dd46fc6-7acb-4f0b-8336-bd376762f28e</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>username</value>
+         <variableId>4b703b47-329a-41a4-bf56-e1efe53c5a22</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId>9dd46fc6-7acb-4f0b-8336-bd376762f28e</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>password</value>
+         <variableId>ae055eb1-e93a-4e41-a6b1-4c59efbbb08f</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId>9dd46fc6-7acb-4f0b-8336-bd376762f28e</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>expectedMessage</value>
+         <variableId>a786f9bb-8b78-475d-894e-c564d83545cf</variableId>
+      </variableLink>
+   </testCaseLink>
+</TestSuiteEntity>

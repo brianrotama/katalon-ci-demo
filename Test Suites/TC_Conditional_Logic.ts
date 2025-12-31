@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSuiteEntity>
+   <description></description>
+   <name>TC_Conditional_Logic</name>
+   <tag></tag>
+   <isRerun>false</isRerun>
+   <mailRecipient></mailRecipient>
+   <numberOfRerun>0</numberOfRerun>
+   <pageLoadTimeout>10</pageLoadTimeout>
+   <pageLoadTimeoutDefault>true</pageLoadTimeoutDefault>
+   <rerunFailedTestCasesOnly>false</rerunFailedTestCasesOnly>
+   <rerunImmediately>false</rerunImmediately>
+   <testSuiteGuid>49276a00-44be-44d5-910b-2728d745d827</testSuiteGuid>
+   <testCaseLink>
+      <guid>6baf138b-2d44-49e1-bfa9-a1f94c5a1ee7</guid>
+      <isReuseDriver>false</isReuseDriver>
+      <isRun>true</isRun>
+      <testCaseId>Test Cases/TC_Conditional_Logic_Test_Data</testCaseId>
+      <testDataLink>
+         <combinationType>MANY</combinationType>
+         <id>e4dfb52a-329d-44b5-b44f-2e2a3d2c35c3</id>
+         <iterationEntity>
+            <iterationType>ALL</iterationType>
+            <value></value>
+         </iterationEntity>
+         <testDataId>Data Files/login_data</testDataId>
+      </testDataLink>
+      <usingDataBindingAtTestSuiteLevel>true</usingDataBindingAtTestSuiteLevel>
+      <variableLink>
+         <testDataLinkId>e4dfb52a-329d-44b5-b44f-2e2a3d2c35c3</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>username</value>
+         <variableId>f61e20d9-8737-4b47-b5af-a4ce999a7af7</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId>e4dfb52a-329d-44b5-b44f-2e2a3d2c35c3</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>password</value>
+         <variableId>406f2a51-ff4c-4ee6-80ee-979f733f6c0d</variableId>
+      </variableLink>
+      <variableLink>
+         <testDataLinkId>e4dfb52a-329d-44b5-b44f-2e2a3d2c35c3</testDataLinkId>
+         <type>DATA_COLUMN</type>
+         <value>expectedMessage</value>
+         <variableId>dbf0685a-ecaf-4c25-97a4-3e548c202430</variableId>
+      </variableLink>
+   </testCaseLink>
+</TestSuiteEntity>

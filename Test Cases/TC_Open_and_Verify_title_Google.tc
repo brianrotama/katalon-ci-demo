@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>TC_Open_and_Verify_title_Google</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>6c3bb3b2-4955-4c50-8462-00ebd124d3ca</testCaseGuid>
+</TestCaseEntity>

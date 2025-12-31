@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>TC_Login_and_Verify_Text_Logout_Positive_OR</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>7c43ffc2-d2f9-451e-acc1-55c7baa1de20</testCaseGuid>
+</TestCaseEntity>
