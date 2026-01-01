@@ -5,7 +5,6 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
   workflow_dispatch:
 
 jobs:
@@ -13,20 +12,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # =========================
+      # Checkout source code
+      # =========================
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # =========================
+      # Setup Java (required by Katalon)
+      # =========================
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # =========================
+      # Download Katalon CLI
+      # =========================
       - name: Download Katalon
         run: |
           wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
           tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
 
+      # =========================
+      # Run Test Suite
+      # =========================
       - name: Run Katalon Test Suite
         run: |
           ./Katalon_Studio_Linux_64-10.2.0/katalonc \
@@ -34,5 +45,37 @@ jobs:
             -runMode=console \
             -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
-            -browserType="Chrome"
+            -browserType="Chrome (headless)" \
+            -retry=1 \
+            -statusDelay=15
 
+      # =========================
+      # Upload HTML Report
+      # =========================
+      - name: Upload Katalon HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: katalon-html-report
+          path: |
+            Reports/**/**/*.html
+
+      # =========================
+      # Upload JUnit Report
+      # =========================
+      - name: Upload JUnit Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: katalon-junit-report
+          path: |
+            Reports/**/JUnit_Report.xml
+
+      # =========================
+      # Publish JUnit result to GitHub UI
+      # =========================
+      - name: Publish JUnit Test Results
+        if: always()
+        uses: mikepenz/action-junit-report@v4
+        with:
+          report_paths: Reports/**/JUnit_Report.xml
