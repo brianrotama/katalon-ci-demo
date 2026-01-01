@@ -31,15 +31,26 @@ jobs:
         run: |
           wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
           tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
+      
+      - name: Setup display (Xvfb)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1920x1080x24 &
 
       - name: Run Katalon Test Suite
+        env:
+          DISPLAY: :99
         run: |
           ./Katalon_Studio_Linux_64-10.2.0/katalonc \
             -noSplash \
             -runMode=console \
             -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
-            -browserType="Chrome (headless)"
+            -browserType="Chrome (headless)" \
+            -retry=0 \
+            -retryFailedTestCases=false
 
       - name: Upload Katalon Reports
         if: always()
