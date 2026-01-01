@@ -31,7 +31,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 🔥 WAJIB: Linux dependency untuk Chrome + Katalon
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
