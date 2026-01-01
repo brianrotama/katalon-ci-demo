@@ -63,7 +63,7 @@ jobs:
             -runMode=console \
             -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
-            -browserType="Chrome" \
+            -browserType="Chrome (headless)" \
             -retry=0 \
             -retryFailedTestCases=false \
             -reportFolder="Reports" \
