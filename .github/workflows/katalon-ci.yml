@@ -1,3 +1,18 @@
+name: Katalon CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+    inputs:
+      run_reason:
+        description: 'Reason to run'
+        required: false
+        default: 'manual'
+
 jobs:
   katalon-test:
     runs-on: ubuntu-latest
@@ -24,19 +39,8 @@ jobs:
             -runMode=console \
             -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
-            -browserType="Chrome (headless)" \
-            -retry=0 \
-            -retryFailedTestCases=false
+            -browserType="Chrome (headless)"
 
       - name: Upload Katalon Reports
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: katalon-reports
-          path: Reports/
-
-      - name: Publish JUnit Report
-        if: always()
-        uses: mikepenz/action-junit-report@v4
-        with:
-          report_paths: '**/JUnit_Report.xml'
+        uses: acti
