@@ -17,7 +17,6 @@ jobs:
           wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
           tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
 
-      # ✅ INI YANG KAMU TANYAKAN
       - name: Run Katalon Test Suite
         run: |
           ./Katalon_Studio_Linux_64-10.2.0/katalonc \
@@ -29,7 +28,6 @@ jobs:
             -retry=0 \
             -retryFailedTestCases=false
 
-      # ✅ WAJIB supaya report muncul
       - name: Upload Katalon Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -37,7 +35,6 @@ jobs:
           name: katalon-reports
           path: Reports/
 
-      # ✅ Bikin JUnit kebaca GitHub
       - name: Publish JUnit Report
         if: always()
         uses: mikepenz/action-junit-report@v4
