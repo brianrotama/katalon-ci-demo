@@ -1,9 +1,19 @@
 name: Katalon CI (Free Docker)
 
+permissions:
+  contents: read
+  checks: write
+
 on:
   push:
     branches: [ "main" ]
+
   workflow_dispatch:
+    inputs:
+      run_reason:
+        description: 'Reason to run'
+        required: false
+        default: 'manual'
 
 jobs:
   katalon-test:
@@ -13,14 +23,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 🐳 RUN KATALON VIA DOCKER (TANPA DOWNLOAD, TANPA BAYAR)
       - name: Run Katalon Tests (Docker)
         run: |
+          mkdir -p Reports
+
           docker run --rm \
             -v "$PWD:/project" \
             katalonstudio/katalon \
             katalonc.sh \
             -noSplash \
             -runMode=console \
+            -apiKey="${{ secrets.KATALON_API_KEY }}" \
             -projectPath=/project/Phase_1_Simple_Running.prj \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
             -browserType="Chrome (headless)" \
@@ -29,9 +43,24 @@ jobs:
             -reportFolder=Reports \
             -reportFileName=ci-report
 
-      - name: Upload Reports
+      # 🔍 DEBUG (PASTIKAN REPORT ADA)
+      - name: Debug Reports
+        if: always()
+        run: |
+          echo "=== REPORT TREE ==="
+          ls -R Reports || true
+
+      # 📦 UPLOAD REPORT SEBAGAI ARTIFACT
+      - name: Upload Katalon Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: katalon-reports
           path: Reports/
+
+      # 📊 PUBLISH JUNIT RESULT
+      - name: Publish JUnit Report
+        if: always()
+        uses: mikepenz/action-junit-report@v4
+        with:
+          report_paths: '**/JUnit_Report.xml'
