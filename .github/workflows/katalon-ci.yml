@@ -1,19 +1,9 @@
-name: Katalon CI
-
-permissions:
-  contents: read
-  checks: write
+name: Katalon CI (Free Docker)
 
 on:
   push:
     branches: [ "main" ]
-
   workflow_dispatch:
-    inputs:
-      run_reason:
-        description: 'Reason to run'
-        required: false
-        default: 'manual'
 
 jobs:
   katalon-test:
@@ -23,72 +13,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      # ✅ DEPENDENCIES YANG VALID UNTUK UBUNTU TERBARU
-      - name: Install Linux dependencies
+      - name: Run Katalon Tests (Docker)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 \
-            libxss1 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libxcomposite1 \
-            libxrandr2 \
-            libgbm1 \
-            libgtk-3-0 \
-            libxdamage1 \
-            libxfixes3 \
-            libdrm2 \
-            libasound2t64 \
-            xvfb
-
-      - name: Download Katalon
-        run: |
-          wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
-          tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
-
-      # ✅ RUN TEST SUITE (HEADLESS + REPORT)
-      - name: Run Katalon Test Suite
-        run: |
-          mkdir -p Reports
-
-          xvfb-run ./Katalon_Studio_Linux_64-10.2.0/katalonc \
+          docker run --rm \
+            -v "$PWD:/project" \
+            katalonstudio/katalon \
+            katalonc.sh \
             -noSplash \
             -runMode=console \
-            -logLevel=DEBUG \
-            -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
+            -projectPath=/project/Phase_1_Simple_Running.prj \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
             -browserType="Chrome (headless)" \
             -retry=0 \
             -retryFailedTestCases=false \
-            -reportFolder="Reports" \
-            -reportFileName="ci-report"
+            -reportFolder=Reports \
+            -reportFileName=ci-report
 
-      # 🔍 DEBUG UNTUK PASTIKAN REPORT ADA
-      - name: Debug Reports
-        if: always()
-        run: |
-          echo "=== REPORT TREE ==="
-          ls -R Reports || true
-
-      # 📦 UPLOAD REPORT SEBAGAI ARTIFACT
-      - name: Upload Katalon Reports
+      - name: Upload Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: katalon-reports
           path: Reports/
-
-      # 📊 PUBLISH JUNIT RESULT
-      - name: Publish JUnit Report
-        if: always()
-        uses: mikepenz/action-junit-report@v4
-        with:
-          report_paths: '**/JUnit_Report.xml'
