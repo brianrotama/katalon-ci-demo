@@ -7,7 +7,13 @@ permissions:
 on:
   push:
     branches: [ "main" ]
+
   workflow_dispatch:
+    inputs:
+      run_reason:
+        description: 'Reason to run'
+        required: false
+        default: 'manual'
 
 jobs:
   katalon-test:
@@ -23,29 +29,32 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # ✅ DEPENDENCIES YANG VALID UNTUK UBUNTU TERBARU
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            xvfb \
             libnss3 \
-            libgconf-2-4 \
-            libxi6 \
-            libxrender1 \
-            libxtst6 \
+            libxss1 \
             libatk1.0-0 \
             libatk-bridge2.0-0 \
             libcups2 \
             libxcomposite1 \
             libxrandr2 \
             libgbm1 \
-            libasound2
+            libgtk-3-0 \
+            libxdamage1 \
+            libxfixes3 \
+            libdrm2 \
+            libasound2t64 \
+            xvfb
 
       - name: Download Katalon
         run: |
           wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
           tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
 
+      # ✅ RUN TEST SUITE (HEADLESS + REPORT)
       - name: Run Katalon Test Suite
         run: |
           mkdir -p Reports
@@ -62,12 +71,14 @@ jobs:
             -reportFolder="Reports" \
             -reportFileName="ci-report"
 
+      # 🔍 DEBUG UNTUK PASTIKAN REPORT ADA
       - name: Debug Reports
         if: always()
         run: |
           echo "=== REPORT TREE ==="
           ls -R Reports || true
 
+      # 📦 UPLOAD REPORT SEBAGAI ARTIFACT
       - name: Upload Katalon Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -75,6 +86,7 @@ jobs:
           name: katalon-reports
           path: Reports/
 
+      # 📊 PUBLISH JUNIT RESULT
       - name: Publish JUnit Report
         if: always()
         uses: mikepenz/action-junit-report@v4
