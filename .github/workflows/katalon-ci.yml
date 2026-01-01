@@ -31,23 +31,33 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # 🔥 WAJIB: Linux dependency untuk Chrome + Katalon
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 \
+            libgconf-2-4 \
+            libxi6 \
+            libxrender1 \
+            libxtst6 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libxcomposite1 \
+            libxrandr2 \
+            libgbm1 \
+            libasound2 \
+            xvfb
+
       - name: Download Katalon
         run: |
           wget https://download.katalon.com/10.2.0/Katalon_Studio_Linux_64-10.2.0.tar.gz
           tar -xzf Katalon_Studio_Linux_64-10.2.0.tar.gz
-      
-      - name: Setup display (Xvfb)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &
 
       - name: Run Katalon Test Suite
-        env:
-          DISPLAY: :99
         run: |
-          ./Katalon_Studio_Linux_64-10.2.0/katalonc \
+          xvfb-run ./Katalon_Studio_Linux_64-10.2.0/katalonc \
             -noSplash \
             -runMode=console \
             -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
