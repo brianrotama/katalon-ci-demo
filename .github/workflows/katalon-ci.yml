@@ -7,15 +7,7 @@ permissions:
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
   workflow_dispatch:
-    inputs:
-      run_reason:
-        description: 'Reason to run'
-        required: false
-        default: 'manual'
 
 jobs:
   katalon-test:
@@ -35,6 +27,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
+            xvfb \
             libnss3 \
             libgconf-2-4 \
             libxi6 \
@@ -46,8 +39,7 @@ jobs:
             libxcomposite1 \
             libxrandr2 \
             libgbm1 \
-            libasound2 \
-            xvfb
+            libasound2
 
       - name: Download Katalon
         run: |
@@ -61,6 +53,7 @@ jobs:
           xvfb-run ./Katalon_Studio_Linux_64-10.2.0/katalonc \
             -noSplash \
             -runMode=console \
+            -logLevel=DEBUG \
             -projectPath="$(pwd)/Phase_1_Simple_Running.prj" \
             -testSuitePath="Test Suites/TS_ReuseLogin_ObjectRepository_DataDriven" \
             -browserType="Chrome (headless)" \
@@ -69,10 +62,10 @@ jobs:
             -reportFolder="Reports" \
             -reportFileName="ci-report"
 
-      - name: Debug report folder
+      - name: Debug Reports
         if: always()
         run: |
-          echo "=== LIST REPORTS ==="
+          echo "=== REPORT TREE ==="
           ls -R Reports || true
 
       - name: Upload Katalon Reports
