@@ -1,8 +1,6 @@
 # Playwright Automation Framework
-
 ![Playwright Tests](https://github.com/brianrotama/katalon-ci-demo/actions/workflows/playwright.yml/badge.svg)
 
-# Playwright Automation Framework
 End-to-end UI automation framework built with **Playwright**, **TypeScript**, and **Page Object Model**.
 
 ## ✨ Features
