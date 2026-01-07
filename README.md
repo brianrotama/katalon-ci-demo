@@ -8,3 +8,8 @@ End-to-end UI automation framework built with **Playwright**, **TypeScript**, an
 - GitHub Actions & Jenkins ready
 - HTML report
 - Headless CI execution
+
+## 🧪 Test Structure
+pages/ → Page Objects
+tests/ → Test specs
+utils/ → Helpers (CSV, data, etc.)
