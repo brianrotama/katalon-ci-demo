@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { URLS } from './urls';
+import { BasePage } from './BasePage.js';
+import { URLS } from './urls.js';
 
 export class InputsPage extends BasePage {
   readonly numberInput: Locator;
