@@ -1,4 +1,12 @@
-export async function readCsvFromUrl(url: string) {
+export async function readCsvFromUrl(url?: string) {
+  // 🛡️ GUARD: cegah error undefined di CI
+  if (!url) {
+    throw new Error(
+      'GSHEET_URL is undefined. Pastikan environment variable GSHEET_URL diset ' +
+      '(local .env atau GitHub Actions secrets).'
+    );
+  }
+
   // 🔥 Cache busting supaya selalu ambil data terbaru
   const cacheBustUrl = `${url}${url.includes('?') ? '&' : '?'}_ts=${Date.now()}`;
 
@@ -13,13 +21,17 @@ export async function readCsvFromUrl(url: string) {
   const text = await res.text();
 
   if (!text.trim()) {
-    return [];
+    throw new Error('CSV response kosong. Pastikan Google Sheet sudah Publish to web.');
   }
 
   const [headerLine, ...lines] = text
     .trim()
     .split('\n')
     .filter(Boolean);
+
+  if (!headerLine || lines.length === 0) {
+    throw new Error('CSV format tidak valid (header atau data kosong).');
+  }
 
   // 🔑 Normalize header: trim + lowercase
   const headers = headerLine
