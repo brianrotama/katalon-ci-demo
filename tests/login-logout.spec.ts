@@ -7,22 +7,26 @@ test('Login → Logout flow', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const securePage = new SecurePage(page);
 
-  // 🔹 Ambil data dari Google Sheet (SELALU FRESH)
   const users = await readCsvFromUrl(process.env.GSHEET_URL!);
-  const { username, password } = users[0];
+  const { username, password, expected } = users[0]; // expected = boolean
 
-  // 1️⃣ Login
   await loginPage.goto();
   await loginPage.login(username, password);
 
-  // 2️⃣ Assert berhasil login
-  await securePage.isAt();
-  await expect(securePage.flashMessage)
-    .toContainText('You logged into a secure area!');
+  const flashText = await securePage.flashMessage.textContent();
+  const isLoginSuccess = flashText?.includes('secure area') ?? false;
 
-  // 3️⃣ Logout
-  await securePage.logout();
+  // 🔑 LOGIC UTAMA (BOOLEAN VS BOOLEAN)
+  expect(isLoginSuccess).toBe(expected);
 
-  // 4️⃣ Assert kembali ke login page
-  await expect(page).toHaveURL(/\/login$/);
+  // 🔍 ASSERT UI
+  if (expected) {
+    await expect(securePage.flashMessage)
+      .toContainText('You logged into a secure area!');
+    await securePage.logout();
+    await expect(page).toHaveURL(/\/login$/);
+  } else {
+    await expect(securePage.flashMessage)
+      .toContainText('invalid');
+  }
 });
