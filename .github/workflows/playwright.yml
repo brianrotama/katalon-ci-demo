@@ -26,10 +26,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # 🔑 INI BAGIAN PALING PENTING (ENV DARI GITHUB SECRETS)
       - name: Run Playwright tests
         env:
-          GSHEET_LOGIN_URL: ${{ secrets.GSHEET_LOGIN_URL }}
+          GSHEET_URL: ${{ secrets.GSHEET_URL }}
         run: npx playwright test
 
       - name: Upload Playwright HTML report
