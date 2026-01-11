@@ -17,17 +17,19 @@ if (!SHEET_URL) {
   throw new Error('GSHEET_URL is not defined');
 }
 
-/* 🔥 LOAD DATA (DEFINE PHASE) */
+/* 🔥 LOAD DATA */
 const rawData = await readCsvFromUrl(SHEET_URL);
 
-/* 🧹 NORMALIZE DATA (TIDAK ADA FILTER) */
-const testData: TestData[] = rawData.map(row => ({
-  module: String(row.module ?? '').trim().toLowerCase(),
-  tc_name: String(row.tc_name ?? '').trim() || 'no test case name',
-  username: String(row.username ?? '').trim(),
-  password: String(row.password ?? '').trim(),
-  success: Boolean(row.success),
-}));
+/* 🧹 NORMALIZE + FILTER LOGIN ONLY */
+const testData: TestData[] = rawData
+  .map(row => ({
+    module: String(row.module ?? '').trim().toLowerCase(),
+    tc_name: String(row.tc_name ?? '').trim() || 'no test case name',
+    username: String(row.username ?? '').trim(),
+    password: String(row.password ?? '').trim(),
+    success: Boolean(row.success),
+  }))
+  .filter(row => row.module === 'login'); // ⭐⭐⭐ PENTING
 
 /* 🧠 GROUP BY MODULE */
 const dataByModule = testData.reduce<Record<string, TestData[]>>(

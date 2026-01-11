@@ -31,11 +31,25 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  projects: [
+   projects: [
     {
-      name: 'user-chromium',
+      name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        baseURL: 'https://the-internet.herokuapp.com',
+      },
+    },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        baseURL: 'https://the-internet.herokuapp.com',
+      },
+    },
+    {
+      name: 'webkit',
+      use: {
+        ...devices['Desktop Safari'],
         baseURL: 'https://the-internet.herokuapp.com',
       },
     },
