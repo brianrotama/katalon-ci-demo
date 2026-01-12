@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 export class BasePage {
-  protected page: Page;
+  protected readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
@@ -9,11 +9,13 @@ export class BasePage {
 
   async goto(url: string) {
     await this.page.goto(url);
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async fill(locator: Locator, value: string) {
     await expect(locator).toBeVisible();
     await expect(locator).toBeEnabled();
+    await locator.fill('');
     await locator.fill(value);
   }
 

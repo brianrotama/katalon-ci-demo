@@ -1,4 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage.js';
+import { SecurePage } from '../pages/SecurePage.js';
+import { DropdownPage } from '../pages/DropdownPage.js';
 import { readCsvFromUrl } from '../utils/csvFromUrl.js';
 
 interface TestData {
@@ -15,10 +18,10 @@ if (!SHEET_URL) {
   throw new Error('GSHEET_URL is not defined');
 }
 
-/* 🔥 LOAD DATA */
+/* 🔥 LOAD DATA (DEFINE PHASE) */
 const rawData = await readCsvFromUrl(SHEET_URL);
 
-/* 🧹 NORMALIZE + FILTER LOGIN ONLY */
+/* 🧹 NORMALIZE + FILTER DROPDOWN ONLY */
 const testData: TestData[] = rawData
   .map(row => ({
     module: String(row.module ?? '').trim().toLowerCase(),
@@ -27,61 +30,36 @@ const testData: TestData[] = rawData
     password: String(row.password ?? '').trim(),
     success: Boolean(row.success),
   }))
-  .filter(row => row.module === 'dropdown'); // ⭐⭐⭐ PENTING
+  .filter(row => row.module === 'dropdown');
 
-/* 🧠 GROUP BY MODULE */
-const dataByModule = testData.reduce<Record<string, TestData[]>>(
-  (acc, row) => {
-    acc[row.module] ??= [];
-    acc[row.module].push(row);
-    return acc;
-  },
-  {}
-);
+/* 🧪 GENERATE TESTS */
+test.describe('dropdown module', () => {
 
-/* 🧪 GENERATE TEST PER MODULE */
-Object.entries(dataByModule).forEach(([moduleName, cases]) => {
-  test.describe(`${moduleName} module`, () => {
+  testData.forEach(({ tc_name, username, password, success }) => {
 
-    cases.forEach(({ tc_name, username, password, success }) => {
-      test(
-        `${moduleName}: ${tc_name} @${moduleName}`,
-        async ({ page }) => {
+    test(`dropdown: ${tc_name} @dropdown`, async ({ page }) => {
 
-          /* 🔹 1. LOGIN */
-          await page.goto('https://the-internet.herokuapp.com/login');
+      const loginPage = new LoginPage(page);
+      const securePage = new SecurePage(page);
+      const dropdownPage = new DropdownPage(page);
 
-          await page.fill('#username', username);
-          await page.fill('#password', password);
-          await page.click('button[type="submit"]');
+      /* 🔹 1. LOGIN */
+      await securePage.loginAndAssert(username, password, success);
 
-          await expect(page.locator('#flash'))
-            .toContainText('You logged into a secure area!');
+      if (!success) return;
 
-          /* 🔹 2. NAVIGATE KE DROPDOWN */
-          await page.goto('https://the-internet.herokuapp.com/dropdown');
+      /* 🔹 2. DROPDOWN ACTION */
+      await dropdownPage.goto();
 
-          await expect(page.locator('h3'))
-            .toHaveText('Dropdown List');
+      if (tc_name.toLowerCase().includes('select 1')) {
+        await dropdownPage.selectOption('1');
+      }
 
-          const dropdown = page.locator('#dropdown');
+      if (tc_name.toLowerCase().includes('select 2')) {
+        await dropdownPage.selectOption('2');
+      }
 
-          /* 🔹 3. ACTION BASED ON TC NAME */
-          if (tc_name.toLowerCase().includes('select 1')) {
-            await dropdown.selectOption('1');
-            await expect(dropdown).toHaveValue('1');
-          }
-
-          if (tc_name.toLowerCase().includes('select 2')) {
-            await dropdown.selectOption('2');
-            await expect(dropdown).toHaveValue('2');
-          }
-
-          /* 🔹 4. ASSERT FINAL RESULT */
-          expect(success).toBe(true);
-        }
-      );
     });
-
   });
+
 });

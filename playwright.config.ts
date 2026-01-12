@@ -14,7 +14,7 @@ export default defineConfig({
   testDir: './tests',
   testMatch: ['**/*.spec.ts'],
 
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
@@ -22,13 +22,10 @@ export default defineConfig({
   reporter: [['html', { open: 'never' }]],
 
   use: {
-    headless: !!process.env.CI,
+    headless: process.env.HEADLESS !== 'false',
     launchOptions: {
-      slowMo: process.env.CI ? 0 : 300,
+      slowMo: process.env.SLOWMO ? Number(process.env.SLOWMO) : 0,
     },
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    trace: 'on-first-retry',
   },
 
    projects: [
@@ -39,20 +36,20 @@ export default defineConfig({
         baseURL: 'https://the-internet.herokuapp.com',
       },
     },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        baseURL: 'https://the-internet.herokuapp.com',
-      },
-    },
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        baseURL: 'https://the-internet.herokuapp.com',
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     baseURL: 'https://the-internet.herokuapp.com',
+    //   },
+    // },
+    // {
+    //   name: 'webkit',
+    //   use: {
+    //     ...devices['Desktop Safari'],
+    //     baseURL: 'https://the-internet.herokuapp.com',
+    //   },
+    // },
   ],
 
   outputDir: 'test-results',
