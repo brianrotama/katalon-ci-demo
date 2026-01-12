@@ -29,7 +29,7 @@ jobs:
       - name: Run Playwright tests
         env:
           GSHEET_URL: ${{ secrets.GSHEET_URL }}
-          GSHEET_WEBHOOK_URL: ${{ secrets.GSHEET_REPORT_URL }}
+          GSHEET_WEBHOOK_URL: ${{ secrets.GSHEET_WEBHOOK_URL }}
         run: npx playwright test
 
       - name: Upload Playwright HTML report
