@@ -47,4 +47,3 @@ export class LoginPage extends BasePage {
     await expect(this.flashMessage).toContainText('secure area');
   }
 }
-//asd
