@@ -27,11 +27,23 @@ export class LoginPage extends BasePage {
     await this.click(this.loginButton);
   }
 
-  /* ✅ ASSERT LOGIN FAILED */
+  /* ❌ ASSERT LOGIN FAILED */
   async assertLoginFailed() {
     await expect(
       this.flashMessage,
       'Expected error message for invalid credentials'
-    ).toContainText('invalid');
+    ).toHaveClass(/error/);
+
+    await expect(this.flashMessage).toContainText('invalid');
+  }
+
+  /* ✅ ASSERT LOGIN SUCCESS */
+  async assertLoginSuccess() {
+    await expect(
+      this.flashMessage,
+      'Expected success message after login'
+    ).toHaveClass(/success/);
+
+    await expect(this.flashMessage).toContainText('secure area');
   }
 }

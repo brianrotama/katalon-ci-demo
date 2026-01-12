@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage.js';
-import { LoginPage } from './LoginPage.js';
 import { URLS } from './urls.js';
+import { LoginPage } from './LoginPage.js';
 
 export class SecurePage extends BasePage {
   readonly flashMessage: Locator;
@@ -11,6 +11,17 @@ export class SecurePage extends BasePage {
     this.flashMessage = page.locator('#flash');
   }
 
+  /* ✅ ASSERT LOGIN SUCCESS */
+  async assertLoginSuccess() {
+    await this.expectUrlContains(URLS.SECURE);
+
+    await expect(
+      this.flashMessage,
+      'Expected successful login message'
+    ).toContainText('You logged into a secure area!');
+  }
+
+  /* 🔁 OPTIONAL HELPER (LOGIN + ASSERT) */
   async loginAndAssert(
     username: string,
     password: string,
@@ -26,14 +37,5 @@ export class SecurePage extends BasePage {
     } else {
       await loginPage.assertLoginFailed();
     }
-  }
-
-  async assertLoginSuccess() {
-    await this.expectUrlContains(URLS.SECURE);
-
-    await expect(
-      this.flashMessage,
-      'Expected successful login message'
-    ).toContainText('You logged into a secure area!');
   }
 }
