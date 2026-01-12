@@ -2,6 +2,7 @@ import { test } from '@playwright/test';
 import { SecurePage } from '../pages/SecurePage.js';
 import { DropdownPage } from '../pages/DropdownPage.js';
 import { readCsvFromUrl } from '../utils/csvFromUrl.js';
+import { reportToGSheet } from '../utils/reportToGSheet.js';
 
 /* =====================
    DATA INTERFACE
@@ -22,7 +23,7 @@ if (!SHEET_URL) {
 }
 
 /* =====================
-   LOAD DATA
+   LOAD DATA (DEFINE PHASE)
 ===================== */
 const rawData = await readCsvFromUrl(SHEET_URL);
 
@@ -45,26 +46,37 @@ test.describe('dropdown module', () => {
 
   testData.forEach(({ tc_name, username, password }) => {
 
-    test(`dropdown: ${tc_name} @dropdown`, async ({ page }) => {
+    test(
+      `dropdown: ${tc_name} @dropdown`,
+      async ({ page }, testInfo) => {
 
-      const securePage = new SecurePage(page);
-      const dropdownPage = new DropdownPage(page);
+        const securePage = new SecurePage(page);
+        const dropdownPage = new DropdownPage(page);
 
-      /* 🔹 LOGIN — ALWAYS EXPECT SUCCESS */
-      await securePage.loginAndAssert(username, password, true);
+        try {
+          /* 🔹 1. LOGIN (ASSERT DI POM) */
+          await securePage.loginAndAssert(username, password, true);
 
-      /* 🔹 DROPDOWN ACTION */
-      await dropdownPage.goto();
+          /* 🔹 2. DROPDOWN ACTION */
+          await dropdownPage.goto();
 
-      if (tc_name.toLowerCase().includes('select 1')) {
-        await dropdownPage.selectOption('1');
+          if (tc_name.toLowerCase().includes('select 1')) {
+            await dropdownPage.selectOption('1');
+          }
+
+          if (tc_name.toLowerCase().includes('select 2')) {
+            await dropdownPage.selectOption('2');
+          }
+
+        } finally {
+          /* 🔥 AUTO REPORT KE GOOGLE SHEET */
+          const status =
+            testInfo.status === 'passed' ? 'PASSED' : 'FAILED';
+
+            await reportToGSheet(tc_name, status);
+        }
       }
-
-      if (tc_name.toLowerCase().includes('select 2')) {
-        await dropdownPage.selectOption('2');
-      }
-
-    });
+    );
 
   });
 
