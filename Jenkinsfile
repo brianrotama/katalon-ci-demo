@@ -1,8 +1,9 @@
 pipeline {
-  agent any
-
-  tools {
-    nodejs 'node18'
+  agent {
+    docker {
+      image 'mcr.microsoft.com/playwright:v1.42.0-jammy'
+      args '--ipc=host'
+    }
   }
 
   environment {
@@ -10,16 +11,9 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
     stage('Install Dependencies') {
       steps {
         sh 'npm ci'
-        sh 'npx playwright install'
       }
     }
 
