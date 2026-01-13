@@ -5,6 +5,10 @@ pipeline {
     nodejs 'node18'
   }
 
+  environment {
+    GSHEET_URL = credentials('GSHEET_URL')
+  }
+
   stages {
     stage('Checkout') {
       steps {
