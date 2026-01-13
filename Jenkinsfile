@@ -19,12 +19,24 @@ pipeline {
 
   environment {
     GSHEET_URL = credentials('GSHEET_URL')
+    GSHEET_WEBHOOK_URL = credentials('GSHEET_WEBHOOK_URL')
   }
 
   stages {
     stage('Checkout') {
       steps {
-        checkout scm
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: params.GIT_REF]],
+          userRemoteConfigs: [[
+            url: 'https://github.com/brianrotama/playwright-ci-demo'
+          ]],
+          extensions: [[
+            $class: 'CloneOption',
+            shallow: false,
+            noTags: false
+          ]]
+        ])
       }
     }
 
@@ -36,4 +48,3 @@ pipeline {
     }
   }
 }
-//asd
