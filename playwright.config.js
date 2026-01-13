@@ -12,7 +12,7 @@ dotenv.config({
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: ['**/*.spec.ts'],
+  testMatch: ['**/*.spec.js'],
 
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

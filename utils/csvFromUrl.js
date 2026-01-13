@@ -1,4 +1,4 @@
-export async function readCsvFromUrl(url?: string) {
+export async function readCsvFromUrl(url) {
   // 🛡️ GUARD: cegah error undefined di CI
   if (!url) {
     throw new Error(
@@ -21,7 +21,9 @@ export async function readCsvFromUrl(url?: string) {
   const text = await res.text();
 
   if (!text.trim()) {
-    throw new Error('CSV response kosong. Pastikan Google Sheet sudah Publish to web.');
+    throw new Error(
+      'CSV response kosong. Pastikan Google Sheet sudah Publish to web.'
+    );
   }
 
   const [headerLine, ...lines] = text
@@ -38,14 +40,14 @@ export async function readCsvFromUrl(url?: string) {
     .split(',')
     .map(h => h.trim().toLowerCase());
 
-  return lines.map((line, rowIndex) => {
+  return lines.map(line => {
     const values = line.split(',').map(v => v.trim());
 
     return Object.fromEntries(
       headers.map((header, colIndex) => {
         const raw = values[colIndex];
 
-        if (raw === undefined || raw === '') {
+        if (!raw) {
           return [header, ''];
         }
 

@@ -5,16 +5,6 @@ import { readCsvFromUrl } from '../utils/csvFromUrl.js';
 import { reportToGSheet } from '../utils/reportToGSheet.js';
 
 /* =====================
-   DATA INTERFACE
-===================== */
-interface TestData {
-  module: string;
-  tc_name: string;
-  username: string;
-  password: string;
-}
-
-/* =====================
    ENV
 ===================== */
 const SHEET_URL = process.env.GSHEET_URL;
@@ -30,7 +20,7 @@ const rawData = await readCsvFromUrl(SHEET_URL);
 /* =====================
    NORMALIZE + FILTER
 ===================== */
-const testData: TestData[] = rawData
+const testData = rawData
   .map(row => ({
     module: String(row.module ?? '').trim().toLowerCase(),
     tc_name: String(row.tc_name ?? '').trim(),
@@ -73,7 +63,7 @@ test.describe('dropdown module', () => {
           const status =
             testInfo.status === 'passed' ? 'PASSED' : 'FAILED';
 
-            await reportToGSheet(tc_name, status);
+          await reportToGSheet(tc_name, status);
         }
       }
     );

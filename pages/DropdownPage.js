@@ -1,11 +1,9 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { BasePage } from './BasePage.js';
 import { URLS } from './urls.js';
 
 export class DropdownPage extends BasePage {
-  readonly dropdown: Locator;
-
-  constructor(page: Page) {
+  constructor(page) {
     super(page);
     this.dropdown = page.locator('#dropdown');
   }
@@ -16,7 +14,7 @@ export class DropdownPage extends BasePage {
   }
 
   /* ✅ GENERIC SELECT */
-  async selectOption(value: string) {
+  async selectOption(value) {
     await this.dropdown.selectOption(value);
     await expect(this.dropdown).toHaveValue(value);
   }

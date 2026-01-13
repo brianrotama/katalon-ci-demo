@@ -1,31 +1,29 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class BasePage {
-  protected readonly page: Page;
-
-  constructor(page: Page) {
+  constructor(page) {
     this.page = page;
   }
 
-  async goto(url: string) {
+  async goto(url) {
     await this.page.goto(url);
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  async fill(locator: Locator, value: string) {
+  async fill(locator, value) {
     await expect(locator).toBeVisible();
     await expect(locator).toBeEnabled();
     await locator.fill('');
     await locator.fill(value);
   }
 
-  async click(locator: Locator) {
+  async click(locator) {
     await expect(locator).toBeVisible();
     await expect(locator).toBeEnabled();
     await locator.click();
   }
 
-  async expectUrlContains(text: string | RegExp) {
+  async expectUrlContains(text) {
     await expect(this.page).toHaveURL(text);
   }
 }

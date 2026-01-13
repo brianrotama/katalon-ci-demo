@@ -1,14 +1,9 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { BasePage } from './BasePage.js';
 import { URLS } from './urls.js';
 
 export class LoginPage extends BasePage {
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly flashMessage: Locator;
-
-  constructor(page: Page) {
+  constructor(page) {
     super(page);
 
     this.usernameInput = page.locator('#username');
@@ -21,7 +16,7 @@ export class LoginPage extends BasePage {
     await this.page.goto(URLS.LOGIN);
   }
 
-  async login(username: string, password: string) {
+  async login(username, password) {
     await this.fill(this.usernameInput, username);
     await this.fill(this.passwordInput, password);
     await this.click(this.loginButton);

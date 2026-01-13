@@ -1,12 +1,10 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { BasePage } from './BasePage.js';
 import { URLS } from './urls.js';
 import { LoginPage } from './LoginPage.js';
 
 export class SecurePage extends BasePage {
-  readonly flashMessage: Locator;
-
-  constructor(page: Page) {
+  constructor(page) {
     super(page);
     this.flashMessage = page.locator('#flash');
   }
@@ -21,12 +19,8 @@ export class SecurePage extends BasePage {
     ).toContainText('You logged into a secure area!');
   }
 
-  /* 🔁 OPTIONAL HELPER (LOGIN + ASSERT) */
-  async loginAndAssert(
-    username: string,
-    password: string,
-    shouldSucceed: boolean
-  ) {
+  /* 🔁 HELPER: LOGIN + ASSERT */
+  async loginAndAssert(username, password, shouldSucceed = true) {
     const loginPage = new LoginPage(this.page);
 
     await loginPage.goto();
