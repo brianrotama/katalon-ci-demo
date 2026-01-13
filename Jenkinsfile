@@ -6,6 +6,10 @@ pipeline {
     }
   }
 
+  environment {
+    GSHEET_URL = credentials('GSHEET_URL')
+  }
+
   stages {
     stage('Checkout') {
       steps {
@@ -19,7 +23,15 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Debug ENV') {
+      steps {
+        sh '''
+          echo "GSHEET_URL=$GSHEET_URL"
+        '''
+      }
+    }
+
+    stage('Install & Test') {
       steps {
         sh 'npm ci'
         sh 'npx playwright test'
