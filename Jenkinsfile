@@ -17,11 +17,12 @@ pipeline {
       }
     }
 
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
+  stage('Checkout') {
+    steps {
+      git branch: params.GIT_REF,
+          url: 'https://github.com/brianrotama/playwright-ci-demo'
     }
+  }
 
     stage('Install Dependencies') {
       steps {
