@@ -6,27 +6,14 @@ pipeline {
     }
   }
 
-  parameters {
-    string(
-      name: 'GIT_REF',
-      defaultValue: 'main',
-      description: 'Branch or tag selected from Git Parameter'
-    )
-  }
-
   environment {
     GSHEET_URL = credentials('GSHEET_URL')
   }
 
   stages {
-    stage('Clean Workspace') {
-      steps {
-        deleteDir()
-      }
-    }
-
     stage('Checkout') {
       steps {
+        deleteDir()
         echo "Building ref: ${params.GIT_REF}"
         git branch: params.GIT_REF,
             url: 'https://github.com/brianrotama/playwright-ci-demo'
