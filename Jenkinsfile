@@ -1,9 +1,17 @@
 pipeline {
   agent {
     docker {
-      image 'image mcr.microsoft.com/playwright:v1.57.0-jammy'
+      image 'mcr.microsoft.com/playwright:v1.57.0-jammy'
       args '--ipc=host'
     }
+  }
+
+  parameters {
+    string(
+      name: 'GIT_REF',
+      defaultValue: 'main',
+      description: 'Branch or tag selected from Git Parameter'
+    )
   }
 
   environment {
@@ -17,12 +25,13 @@ pipeline {
       }
     }
 
-  stage('Checkout') {
-    steps {
-      git branch: params.GIT_REF,
-          url: 'https://github.com/brianrotama/playwright-ci-demo'
+    stage('Checkout') {
+      steps {
+        echo "Building ref: ${params.GIT_REF}"
+        git branch: params.GIT_REF,
+            url: 'https://github.com/brianrotama/playwright-ci-demo'
+      }
     }
-  }
 
     stage('Install Dependencies') {
       steps {
