@@ -9,6 +9,10 @@ if (!SHEET_URL) {
   throw new Error('GSHEET_URL is not defined');
 }
 
+/**
+ * ✅ FETCH DATA DI LOAD TIME
+ * BUKAN di beforeAll
+ */
 const rawData = await readCsvFromUrl(SHEET_URL);
 
 const testData = rawData
@@ -24,12 +28,14 @@ if (!testData.length) {
   throw new Error('No login test data found in Google Sheet');
 }
 
-test.describe('login module', () => {
+console.log(`[GSHEET] Loaded ${testData.length} login rows`);
 
-  testData.forEach(({ tc_name, username, password }) => {
+test.describe.serial('login module', () => {
 
-    test(`login: ${tc_name} @login`, async ({ page }) => {
+  testData.forEach((data, index) => {
+    test(`@login login case #${index + 1}: ${data.tc_name}`, async ({ page }) => {
 
+      const { tc_name, username, password } = data;
       const loginPage = new LoginPage(page);
       const securePage = new SecurePage(page);
 
@@ -39,16 +45,19 @@ test.describe('login module', () => {
         await loginPage.goto();
         await loginPage.login(username, password);
 
+        // ✅ EMPTY INPUT SUPPORT
         if (!username || !password) {
           await loginPage.assertLoginFailed();
           return;
         }
 
+        // ✅ NEGATIVE CASE
         if (tc_name.toLowerCase().includes('invalid')) {
           await loginPage.assertLoginFailed();
           return;
         }
 
+        // ✅ POSITIVE CASE
         await securePage.assertLoginSuccess();
 
       } catch (err) {
@@ -58,7 +67,6 @@ test.describe('login module', () => {
         await reportToGSheet(tc_name, status);
       }
     });
-
   });
 
 });

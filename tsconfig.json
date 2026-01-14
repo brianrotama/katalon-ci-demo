@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "types": ["node", "playwright"]
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "playwright.config.js", "utils/reportToGSheet.js", "utils/csvFromUrl.js", "tests/login-gsheet-clean.spec.js", "tests/login-dropdown.spec.js", "tests/example.spec.js", "pages/SecurePage.js", "pages/LoginPage.js", "pages/InputsPage.js", "pages/DropdownPage.js", "pages/BasePage.js"]
 }
