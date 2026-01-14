@@ -6,6 +6,10 @@ pipeline {
     }
   }
 
+  triggers {
+    cron('H 1 * * *')
+  }
+
   parameters {
     gitParameter(
       name: 'GIT_REF',
