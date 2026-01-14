@@ -6,12 +6,10 @@ pipeline {
     }
   }
 
-  // 🌙 Nightly run jam 01:00 (acak menit oleh Jenkins)
   triggers {
     cron('H 1 * * *')
   }
 
-  // 🔀 Branch / Tag selector
   parameters {
     gitParameter(
       name: 'GIT_REF',
@@ -23,7 +21,6 @@ pipeline {
     )
   }
 
-  // 🔐 Secrets
   environment {
     GSHEET_URL = credentials('GSHEET_URL')
     GSHEET_WEBHOOK_URL = credentials('GSHEET_WEBHOOK_URL')
@@ -53,21 +50,20 @@ pipeline {
         sh 'npx playwright test'
       }
     }
+
+    // 🧪 TEST emailext (sementara)
+    stage('Email Test') {
+      steps {
+        emailext(
+          to: 'brian.mbee@gmail.com',
+          subject: 'TEST EMAIL FROM PIPELINE',
+          body: 'Kalau ini masuk, berarti emailext BERFUNGSI'
+        )
+      }
+    }
   }
 
-  stage('Email Test') {
-  steps {
-    emailext(
-      to: 'brian.mbee@gmail.com',
-      subject: 'TEST EMAIL FROM PIPELINE',
-      body: 'Kalau ini masuk, berarti emailext BERFUNGSI'
-    )
-  }
-}
-
-  // 📧 Email Notification (INI YANG KAMU TANYA)
   post {
-
     success {
       emailext(
         to: 'brian.mbee@gmail.com',
@@ -75,15 +71,12 @@ pipeline {
         body: """
 Build SUCCESS 🎉
 
-Job      : ${env.JOB_NAME}
-Build    : #${env.BUILD_NUMBER}
-Git Ref  : ${params.GIT_REF}
+Job     : ${env.JOB_NAME}
+Build   : #${env.BUILD_NUMBER}
+Git Ref : ${params.GIT_REF}
 
-Console Log:
+Console:
 ${env.BUILD_URL}console
-
-Report:
-${env.BUILD_URL}
 """
       )
     }
@@ -95,11 +88,10 @@ ${env.BUILD_URL}
         body: """
 Build FAILED ❌
 
-Job      : ${env.JOB_NAME}
-Build    : #${env.BUILD_NUMBER}
-Git Ref  : ${params.GIT_REF}
+Job     : ${env.JOB_NAME}
+Build   : #${env.BUILD_NUMBER}
+Git Ref : ${params.GIT_REF}
 
-PLEASE CHECK IMMEDIATELY 👇
 ${env.BUILD_URL}console
 """
       )
