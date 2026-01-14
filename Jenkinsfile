@@ -6,10 +6,12 @@ pipeline {
     }
   }
 
+  // 🌙 Nightly run jam 01:00 (acak menit oleh Jenkins)
   triggers {
     cron('H 1 * * *')
   }
 
+  // 🔀 Branch / Tag selector
   parameters {
     gitParameter(
       name: 'GIT_REF',
@@ -21,6 +23,7 @@ pipeline {
     )
   }
 
+  // 🔐 Secrets
   environment {
     GSHEET_URL = credentials('GSHEET_URL')
     GSHEET_WEBHOOK_URL = credentials('GSHEET_WEBHOOK_URL')
@@ -49,6 +52,47 @@ pipeline {
         sh 'npm ci'
         sh 'npx playwright test'
       }
+    }
+  }
+
+  // 📧 Email Notification (INI YANG KAMU TANYA)
+  post {
+
+    success {
+      emailext(
+        to: 'brian.mbee@gmail.com',
+        subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: """
+Build SUCCESS 🎉
+
+Job      : ${env.JOB_NAME}
+Build    : #${env.BUILD_NUMBER}
+Git Ref  : ${params.GIT_REF}
+
+Console Log:
+${env.BUILD_URL}console
+
+Report:
+${env.BUILD_URL}
+"""
+      )
+    }
+
+    failure {
+      emailext(
+        to: 'brian.mbee@gmail.com',
+        subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: """
+Build FAILED ❌
+
+Job      : ${env.JOB_NAME}
+Build    : #${env.BUILD_NUMBER}
+Git Ref  : ${params.GIT_REF}
+
+PLEASE CHECK IMMEDIATELY 👇
+${env.BUILD_URL}console
+"""
+      )
     }
   }
 }
