@@ -55,6 +55,16 @@ pipeline {
     }
   }
 
+  stage('Email Test') {
+  steps {
+    emailext(
+      to: 'brian.mbee@gmail.com',
+      subject: 'TEST EMAIL FROM PIPELINE',
+      body: 'Kalau ini masuk, berarti emailext BERFUNGSI'
+    )
+  }
+}
+
   // 📧 Email Notification (INI YANG KAMU TANYA)
   post {
 
